@@ -1,11 +1,33 @@
 <html>
-<body bgcolor="black">
 
-<br><br><br>
-<center>
-  <img src="piper.gif">
-</center>
+<head lang="en">
+  <meta charset="UTF-8">
+  <title>Unicycle Finance</title>
+  <link href="css/bootstrap.min.css" rel="stylesheet" />
+</head>
 
+<body ng-app="app">
+
+  <div class="row">
+    <div class="col-lg-6 col-sm-12 ng-scope" id="line-chart" ng-controller="LineCtrl">
+      <div class="panel panel-default">
+        <div class="panel-heading">Line Chart</div>
+        <div class="panel-body">
+          <canvas id="line" class="chart chart-line ng-isolate-scope" chart-data="data" chart-labels="labels"
+            chart-click="onClick" chart-hover="onHover" chart-series="series" chart-options="options"
+            chart-dataset-override="datasetOverride" width="688" height="344"></canvas>
+        </div>
+      </div>
+    </div>
+</div>
+
+    <script src="js/angular.js"></script>
+    <script src="js/ui-bootstrap-tpls.min.js"></script>
+    <script src="js/Chart.js"></script>
+    <script src="js/angular-chart.js"></script>
+
+    <script src="app.js"></script>
 
 </body>
+
 </html>
