@@ -2,7 +2,7 @@ import requests
 import json
 
 url = 'https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap'
-#url = 'https://api.thegraph.com/subgraphs/name/ianlapham/uniswapbackup'
+#url = 'https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2'
 
 data = '''
 query {
@@ -18,7 +18,7 @@ query {
 '''
 
 response = requests.post(url,json={'query': data})
-#print(response.content)
+print(response.content)
 
 for exchange in json.loads(response.content)['data']['exchanges']:
   print(exchange['tokenName'])
