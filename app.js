@@ -54,7 +54,7 @@ function doGraphQL() {
                 }
       `;
 
-    fetch('https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap', {
+    fetch('https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,7 +91,7 @@ function getProfits(addr,number) {
         }
       `;
 
-    fetch('https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap', {
+    fetch('https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
