@@ -4,7 +4,7 @@ let uniswapDays = [];//=["1/22", "1/23", "1/24", "1/25", "1/26", "1/27", "1/28",
 let thisDate = new Date();
 for(let x=0;x<14;++x)
 {
-    uniswapDays.unshift(thisDate.getMonth()+"/"+thisDate.getDate());
+    uniswapDays.unshift(thisDate.getMonth()+1+"/"+thisDate.getDate());
     thisDate.setDate(thisDate.getDate() - 1);
 }
 
