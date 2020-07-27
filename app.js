@@ -1,6 +1,7 @@
 let uniswapData = [];
 
-let uniswapDays = [];//=["1/22", "1/23", "1/24", "1/25", "1/26", "1/27", "1/28", "1/29", "2/1", "2/2", "2/3", "2/4", "2/5", "2/6"];
+let uniswapDays = [];
+let seriesNames = [];
 let thisDate = new Date();
 for(let x=0;x<14;++x)
 {
@@ -16,7 +17,7 @@ doGraphQL();
 angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
     scope=$scope;
     $scope.labels = uniswapDays;
-    $scope.series = ['Series A', 'Series B'];
+    $scope.series = seriesNames;
     $scope.data = uniswapData;
     $scope.onClick = function (points, evt) {
         console.log(points, evt);
@@ -46,13 +47,20 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
 });
 
 function doGraphQL() {
+    let rightnow = Math.round(new Date().getTime()/1000);
+    let today = rightnow - rightnow%86400;
+    
     var query = `query {
-        exchangeDayDatas(where:{date: 1583452800}, orderBy:ethVolume, orderDirection:desc, first:12)
-                  {
-                    exchangeAddress
-                  }
-                }
-      `;
+        pairDayDatas(first: 10, where:{date:`+today+`}, orderBy:dailyVolumeUSD, orderDirection:desc) {
+            pairAddress
+            token0{
+                symbol
+              }
+              token1{
+                symbol
+              }
+        }
+    }`;
 
     fetch('https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2', {
             method: 'POST',
@@ -70,9 +78,14 @@ function doGraphQL() {
             console.log('data returned:', data);
 
             uniswapData[0] = [];
-            for (entry in data['data']['exchangeDayDatas']) {
-                getProfits(data['data']['exchangeDayDatas'][entry]['exchangeAddress'],entry);
-                console.log("addr is "+data['data']['exchangeDayDatas'][entry]['exchangeAddress']);
+            console.log(data);
+            for (entry in data['data']['pairDayDatas']) {
+                let token0 = data['data']['pairDayDatas'][entry]['token0']['symbol'];
+                let token1 = data['data']['pairDayDatas'][entry]['token1']['symbol'];
+                seriesNames.push(token0+'/'+token1);
+                console.log(token0+'/'+token1)
+                getProfits(data['data']['pairDayDatas'][entry]['pairAddress'],entry,token0+'/'+token1);
+                console.log("addr is "+data['data']['pairDayDatas'][entry]['pairAddress']);
             }
         }).then(function () {
             //scope.$apply();
@@ -81,14 +94,20 @@ function doGraphQL() {
 
 function getProfits(addr,number) {
     var query = `query {
-        exchangeDayDatas(where:{exchangeAddress: "`+addr+`"}, orderBy:date, orderDirection:desc, first:14)
-          {
-            id
-            date
-            ethVolume
-            ethBalance
-          }
-        }
+            pairDayDatas(where:{pairAddress: "`+addr+`"}, orderBy:date, orderDirection:desc, first:14)
+              {
+                id
+                date
+                dailyVolumeUSD
+                reserveUSD
+                token0{
+                    symbol
+                  }
+                  token1{
+                    symbol
+                  }
+              }
+            }
       `;
 
     fetch('https://api.thegraph.com/subgraphs/name/ianlapham/uniswapv2', {
@@ -106,17 +125,31 @@ function getProfits(addr,number) {
         .then(function (data) {
             console.log('data returned:', data);
 
-            console.log("awesome");
+            try
+            {
+            let token0 = data['data']['pairDayDatas'][entry]['token0']['symbol'];
+            let token1 = data['data']['pairDayDatas'][entry]['token1']['symbol'];
+            console.log("pair: "+token0+'/'+token1);
+            }
+            catch(err)
+            {
+                console.log(err);
+            }
             //uniswapDays=[];
 
             uniswapData[number] = [];
-            for (entry in data['data']['exchangeDayDatas']) {
-                let vol = data['data']['exchangeDayDatas'][entry]['ethVolume'];
-                let liq = data['data']['exchangeDayDatas'][entry]['ethBalance']*2;
+            for (entry in data['data']['pairDayDatas']) {
+                let vol = data['data']['pairDayDatas'][entry]['dailyVolumeUSD'];
+                let liq = data['data']['pairDayDatas'][entry]['reserveUSD'];
                 let ryr = vol*0.003/liq*100*365 // relative yearly returns;
                 console.log(ryr);
                 uniswapData[number].unshift(ryr);
             }
+
+            console.log(uniswapData[number].length);
+            // pad some zeroes for the really new stuff
+            while(uniswapData[number].length<14)uniswapData[number].unshift(0);
+
         }).then(function () {
             //scope.$apply();
             displayedCount++;
