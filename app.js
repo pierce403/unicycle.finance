@@ -24,8 +24,6 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
     };
     $scope.datasetOverride = [{
         yAxisID: 'y-axis-1'
-    }, {
-        yAxisID: 'y-axis-2'
     }];
     $scope.options = {
         scales: {
@@ -34,12 +32,6 @@ angular.module("app", ["chart.js"]).controller("LineCtrl", function ($scope) {
                     type: 'linear',
                     display: true,
                     position: 'left'
-                },
-                {
-                    id: 'y-axis-2',
-                    type: 'linear',
-                    display: true,
-                    position: 'right'
                 }
             ]
         }
