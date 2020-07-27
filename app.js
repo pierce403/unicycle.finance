@@ -146,7 +146,6 @@ function getProfits(addr,number) {
                 uniswapData[number].unshift(ryr);
             }
 
-            console.log(uniswapData[number].length);
             // pad some zeroes for the really new stuff
             while(uniswapData[number].length<14)uniswapData[number].unshift(0);
 
