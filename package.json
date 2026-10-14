@@ -1,0 +1,15 @@
+{
+  "name": "unicycle-finance-site",
+  "private": true,
+  "scripts": {
+    "build": "node scripts/build-site.mjs",
+    "deploy": "wrangler deploy",
+    "check:deploy": "npm run build && wrangler deploy --dry-run"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "devDependencies": {
+    "wrangler": "4.149.0"
+  }
+}
